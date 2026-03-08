@@ -94,9 +94,9 @@
 
 .NOTES
 	COPYRIGHT:
-	 - Автор: t3hc0nnect10n
-	 - Лицензия: CC BY-NC 4.0
-	 - (c) 2026 t3hc0nnect10n
+	 	- Автор: t3hc0nnect10n
+	 	- Лицензия: CC BY-NC 4.0
+	 	- (c) 2026 t3hc0nnect10n
 #>
 
 # Параметры
@@ -8645,4 +8645,5 @@ if ($Global:MainForm -ne $null -and -not $Global:MainForm.IsDisposed) {
     $Global:MainForm.Dispose()
 
 }
+
 
