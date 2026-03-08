@@ -1,9 +1,29 @@
+<a name="readme-top"></a>
 # 1C Automation Tool — GUI Edition
+
+![PowerShell](https://img.shields.io/badge/PowerShell-5.1%2B-blue)
+![Windows](https://img.shields.io/badge/Platform-Windows-lightgrey)
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
 
 Инструмент для работы с серверной средой **1С:Предприятие 8**. Взаимодействует с сервером, каталогом Active Directory, контролирует пользовательский ввод и выполняет операции через графический интерфейс.
 
-**Версия:** 1.0.0.0  
-**Автор:** t3hc0nnect10n
+---
+
+## Лицензия и авторство
+
+Автор данного проекта: **t3hc0nnect10n**
+
+Этот проект распространяется под лицензией **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)**.
+
+Это означает, что вы можете:
+*   **Делиться** — копировать и распространять материал на любом носителе и в любом формате.
+*   **Адаптировать** — ремикшировать, изменять и создавать новое на основе этого материала.
+
+**При обязательном соблюдении условий:**
+*   **Attribution (Атрибуция)** — вы должны обеспечить **соответствующее указание авторства**, предоставить ссылку на лицензию и обозначить изменения, если они были сделаны.
+*   **NonCommercial (Некоммерческое использование)** — вы не можете использовать этот материал в коммерческих целях.
+
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
 
 ---
 
