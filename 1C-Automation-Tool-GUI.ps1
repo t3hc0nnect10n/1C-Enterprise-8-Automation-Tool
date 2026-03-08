@@ -1,37 +1,102 @@
-﻿<#
-    Made by t3hc0nnect10n (c) 2026
-    Version 1.0.0.0 - GUI Edition
+<#
+.SYNOPSIS
+	Version 1.0.0.0 - GUI Edition
+	Сценарий предназначен для работы с серверной средой *ПО "1С:Предприятие".
+	Взаимодействует с сервером, с каталогом Active Directory, осуществляет контроль
+	пользовательского ввода и выполняет функции:
+	- Подключение к серверу.
+	- Вывод информации (COM-объект, версии платформы, служба).
+	- Работа со службой (запуск, остановка, перезапуск).
+	- Работа с COM-объектом (регистрация, отмена регистрации).
+	- Удаление активных сессий (из выбранных баз или все на кластере, с логом).
+	- Удаление временных файлов.
+	- Удаление/установка сервера и службы.
 
-    Для работы сценария требуется настроенная служба - Windows Remote Management (WinRM).
-    https://learn.microsoft.com/en-us/windows/win32/winrm/portal
+.DESCRIPTION
+	|=========================================|
+	|     Основная механика сценария          |
+	|=========================================|
+	| 0. Устанавливает подключение к серверу  |
+	| 1. Вывод информации о COM-объекте       |
+	| 2. Вывод информации о версиях платформы |
+	| 3. Вывод информации о службе            |
+	| 4. Работа со службой:                   |
+	|    - запуск; остановка; перезапуск      |
+	| 5. Работа с COM-объектом:               |
+	|    - регистрация; отмена регистрации    |
+	| 6. Удаление активных сессий:            |
+	|    - из выбранных баз (формируется лог) |
+	|    - все сессии на кластере (лог)       |
+	| 7. Удаление временных файлов            |
+	| 8. Удаление сервера и службы            |
+	| 9. Установка сервера и службы           |
+	|=========================================|
 
-    Перед первым запуском может потребоваться установить политику выполнения PowerShell, например:
-    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-    (при изменении политики для всей системы могут потребоваться права администратора).
+	|========================================|
+	|     Вспомогательные функции            |
+	|========================================|
+	|                                        |
+	| Вывод и форматирование:                |
+	| - Write-DebugWithTime                  |
+	| - Write-OutputResults                  |
+	| - Write-ToOutputColored                |
+	| - Write-ToOutputColoredMulti           |
+	| - Write-ToOutputSegments               |
+	| - Write-ToOutput                       |
+	| - Write-Host (переопределение для GUI) |
+	|                                        |
+	| Безопасность:                          |
+	| - Encrypt-Password                     |
+	| - Decrypt-Password                     |
+	| - Test-WinRMPasswordInLogs             |
+	|                                        |
+	| GUI элементы:                          |
+	| - Create-MainForm                      |
+	| - Show-SelectionDialog                 |
+	| - Show-InputDialog                     |
+	| - Show-BasesCheckBoxDialog             |
+	| - Show-BasesInputDialog                |
+	| - Show-PasswordDialog                  |
+	|                                        |
+	| Прогресс-бары:                         |
+	| - Show-ProgressBar                     |
+	| - Update-ProgressBar                   |
+	| - Hide-ProgressBar                     |
+	| - Start-ProgressBarAnimation           |
+	| - Stop-ProgressBarAnimation            |
+	| - Start-AnimatedProgressBar            |
+	| - Show-FolderDeletionProgressBar       |
+	| - Update-FolderDeletionProgressBar     |
+	| - Hide-FolderDeletionProgressBar       |
+	|                                        |
+	| Подключение и выполнение:              |
+	| - Test-IsLocalServer                   |
+	| - Connect-ToServer                     |
+	| - Execute-Function                     |
+	| - Execute-JobService1CWithGUI          |
+	| - Execute-JobComObject1CWithGUI        |
+	| - Execute-DisactivateSession1CWithGUI  |
+	| - Execute-InstallServer1CWithGUI       |
+	|                                        |
+	| Проверка учетных данных:               |
+	| - Test-DomainCredentials               |
+	|                                        |
+	|========================================|
 
-    Сценарий предназначен для работы с серверной средой *ПО "1С:Предприятие".
-    Взаимодействует с сервером, с каталогом Active Directory, осуществляет контроль
-    пользовательского ввода и выполняет функции:
+	Для работы сценария требуется настроенная служба - Windows Remote Management (WinRM).
+	https://learn.microsoft.com/en-us/windows/win32/winrm/portal
 
-         0. Устанавливает подключение к серверу.
-         1. Вывод информации о COM-объекте.
-         2. Вывод информации о версиях платформы.
-         3. Вывод информации о службе.
-         4. Работа со службой:
-            - запуск;
-            - остановка;
-            - перезапуск.
-         5. Работа с COM-объектом:
-            - регистрация;
-            - отмена регистрации.
-         6. Удаление активных сессий:
-            - из выбранных баз (формируется лог);
-            - все сессии на кластере (формируется лог).
-         7. Удаление временных файлов.
-         8. Удаление сервера и службы.
-         9. Установка сервера и службы.
+	Перед первым запуском может потребоваться установить политику выполнения PowerShell, например:
+	Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+	(при изменении политики для всей системы могут потребоваться права администратора).
 
-    *ПО - программное обеспечение.
+	*ПО - программное обеспечение.
+
+.NOTES
+	COPYRIGHT:
+	 - Автор: t3hc0nnect10n
+	 - Лицензия: CC BY-NC 4.0
+	 - (c) 2026 t3hc0nnect10n
 #>
 
 # Параметры
@@ -54,53 +119,6 @@ Add-Type -AssemblyName System.Drawing
 
 # |========================================|
 # |   Вспомогательные функции              |
-# |========================================|
-# |                                        |
-# | Вывод и форматирование:                |
-# | - Write-DebugWithTime                  |
-# | - Write-OutputResults                  |
-# | - Write-ToOutputColored                |
-# | - Write-ToOutputColoredMulti           |
-# | - Write-ToOutputSegments               |
-# | - Write-ToOutput                       |
-# | - Write-Host (переопределение для GUI) |
-# |                                        |
-# | Безопасность:                          |
-# | - Encrypt-Password                     |
-# | - Decrypt-Password                     |
-# | - Test-WinRMPasswordInLogs             |
-# |                                        |
-# | GUI элементы:                          |
-# | - Create-MainForm                      |
-# | - Show-SelectionDialog                 |
-# | - Show-InputDialog                     |
-# | - Show-BasesCheckBoxDialog             |
-# | - Show-BasesInputDialog                |
-# | - Show-PasswordDialog                  |
-# |                                        |
-# | Прогресс-бары:                         |
-# | - Show-ProgressBar                     |
-# | - Update-ProgressBar                   |
-# | - Hide-ProgressBar                     |
-# | - Start-ProgressBarAnimation           |
-# | - Stop-ProgressBarAnimation            |
-# | - Start-AnimatedProgressBar            |
-# | - Show-FolderDeletionProgressBar       |
-# | - Update-FolderDeletionProgressBar     |
-# | - Hide-FolderDeletionProgressBar       |
-# |                                        |
-# | Подключение и выполнение:              |
-# | - Test-IsLocalServer                   |
-# | - Connect-ToServer                     |
-# | - Execute-Function                     |
-# | - Execute-JobService1CWithGUI          |
-# | - Execute-JobComObject1CWithGUI        |
-# | - Execute-DisactivateSession1CWithGUI  |
-# | - Execute-InstallServer1CWithGUI       |
-# |                                        |
-# | Проверка учетных данных:               |
-# | - Test-DomainCredentials               |
-# |                                        |
 # |========================================|
 
 # Функция для вывода результатов с обработкой маркеров [OK] и [ОШИБКА]
@@ -2781,16 +2799,6 @@ function Write-Host {
 
 # |========================================|
 # |     Функции 1С:Предприятие 8           |
-# |========================================|
-# | 1. Информация о COM-объекте            |
-# | 2. Информация о версиях платформы      |
-# | 3. Информация о службе                 |
-# | 4. Работа со службой                   |
-# | 5. Работа с COM-объектом               |
-# | 6. Удаление активных сессий            |
-# | 7. Удаление временных файлов           |
-# | 8. Удаление сервера                    |
-# | 9. Установка сервера                   |
 # |========================================|
 
 # Функция 1. Информация о COM-объекте (исправлена для вывода в GUI)
@@ -8635,4 +8643,5 @@ else {
 # Очистка при закрытии формы
 if ($Global:MainForm -ne $null -and -not $Global:MainForm.IsDisposed) {
     $Global:MainForm.Dispose()
+
 }
