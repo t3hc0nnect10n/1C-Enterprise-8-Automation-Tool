@@ -361,19 +361,18 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 Install-Module ps2exe -Scope CurrentUser
 ```
 
+Использовать параметры:
+
+* `-noConsole`
+* `-noOutput`
+* `-noError`
+* `-requireAdmin`
+
 Сборка:
 
 ```powershell
 Invoke-ps2exe `
--inputFile ".\1C-Automation-Tool-GUI.ps1" -outputFile ".\1C-Automation-Tool-GUI.exe"
+-inputFile ".\1C-Automation-Tool-GUI.ps1" -outputFile ".\1C-Automation-Tool-GUI.exe" -noConsole -noOutput -noError -requireAdmin
 ```
-
-Дополнительные параметры:
-
-| Параметр        | Назначение                  |
-| --------------- | --------------------------- |
-| `-noConsole`    | запуск без консольного окна |
-| `-noError`      | скрыть окно ошибок          |
-| `-requireAdmin` | запрос прав администратора  |
 
 <p align="right"><a href="#readme-top">🔝</a></p>
