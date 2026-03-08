@@ -25,8 +25,6 @@
 
 ## ⚖️ Лицензия и авторство
 
-## ⚖️ Лицензия и авторство
-
 Автор данного проекта: **t3hc0nnect10n**
 
 Этот проект распространяется под лицензией **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)**.
